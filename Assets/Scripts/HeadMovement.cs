@@ -13,6 +13,17 @@ public class HeadMovement : MonoBehaviour
     float horizontal;
     float vertical;
     Vector3 savePosition;
+
+    // variaveis para sons de passos do personagem
+    AudioSource audioSource;
+    public AudioClip[] audioClip;
+    public int stepsIndex;
+
+     void Start()
+     {
+         audioSource = GetComponent<AudioSource>();
+         stepsIndex = 0;
+     }
     void Update()
     {
         waveCuts = 0.0f;
@@ -65,10 +76,34 @@ public class HeadMovement : MonoBehaviour
             savePosition.y = originPoint;
         }
 
+     
+
 
         // sempre passa a posicao pro transform que contem o script pois é um update
         transform.localPosition = savePosition;
+
+        // chama o metodo do som
+        StepSounds();
         
+    }
+    
+    // método que define o som dos passos
+    void StepSounds()
+    {
+        // movimento da cabeça[wavecuts] recebe valor constantemente através do tempo 
+        // quando seta no valor -0.95 a cabeça está mais próxima do chão, quase não tenha som no momento do passo
+        if(waveCuts <= -0.95f && !audioSource.isPlaying)
+        {
+            audioSource.clip = audioClip[stepsIndex];
+            // toca audio
+            audioSource.Play();
+            // acrescenta os sons
+            stepsIndex++;
+            if(stepsIndex >= 4)
+            {
+                stepsIndex = 0;
+            }
+        }
     }
 
 }

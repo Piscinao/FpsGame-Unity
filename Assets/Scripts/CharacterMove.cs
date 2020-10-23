@@ -114,7 +114,7 @@ public class CharacterMove : MonoBehaviour
     {
         // trava o persoagem checando se ele esta com a altura bloqueada e não está pulando
         // return e não continua o restante da função
-        if(liftedHeight || onTheFloor == false)
+        if(liftBlocked || onTheFloor == false)
         {
             return;
         }
