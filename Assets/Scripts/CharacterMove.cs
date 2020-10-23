@@ -94,6 +94,12 @@ public class CharacterMove : MonoBehaviour
 
         control.Move(velocityFall * Time.deltaTime);
 
+        // se personagem abaixado chama função de bloqueio
+        if(isLowered)
+        {
+            checkDownBlock();
+        }
+
         if(Input.GetKeyDown(KeyCode.LeftControl))
         {
             goDown();
@@ -106,6 +112,13 @@ public class CharacterMove : MonoBehaviour
 
     void goDown()
     {
+        // trava o persoagem checando se ele esta com a altura bloqueada e não está pulando
+        // return e não continua o restante da função
+        if(liftedHeight || onTheFloor == false)
+        {
+            return;
+        }
+
         isLowered =  !isLowered;
 
         if(isLowered)
@@ -121,9 +134,24 @@ public class CharacterMove : MonoBehaviour
             // Manipula a camera quando for levantar
             cameraTransform.localPosition = new Vector3(0, standingCameraPosition, 0);
         }
-        
+    }
 
-
+    // Método para checar o movimento abaixado
+    void checkDownBlock()
+    {
+        // no lugar de colocar 1.1 no raycast no draeray multiplica a distancia pela direção
+        // cria um raio vermelho em vez de criar um objeto so para representar 
+        Debug.DrawRay(cameraTransform.position, Vector3.up * 1.1f, Color.red);
+        // Tracejado que vem da posição da camera, ele tentar hitar algo com a linha até 1.1 de distancial
+        // se lançar o raio e acerta algo levanta bloqueado é igual true se não false dps chama o metodo no update
+        if(Physics.Raycast(cameraTransform.position, Vector3.up, out hit, 1.1f))
+        {
+            liftBlocked = true;
+        }
+        else
+        {
+            liftBlocked = false;
+        }
     }
 
     // Método nativo simplesmente desenha a esfera
